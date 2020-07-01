@@ -1,0 +1,22 @@
+{
+  "name": "electron-chat-app",
+  "version": "1.0.0",
+  "description": "Chat app implemented in electron",
+  "main": "./public/electron.js",
+  "scripts": {
+    "start": "node server",
+    "dev": "electron ."
+  },
+  "author": "Chinmay Dixit",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^9.0.5",
+    "express": "^4.17.1",
+    "moment": "^2.27.0",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "electron-is-dev": "^1.2.0",
+    "nodemon": "^2.0.4"
+  }
+}
