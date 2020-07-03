@@ -19,31 +19,74 @@
 				<h1>ChatApp</h1>
 			</header>
 			<main class="join-main">
-				<form action="chat.html">
-					<div class="form-control">
-						<label for="username">Username</label>
-						<input
-							type="text"
-							name="username"
-							id="username"
-							placeholder="Enter username..."
-							required
-						/>
+				<div class="form-container">
+					<div class="login-container">
+						<form action="chat.html" id="login-form">
+							<div class="form-control">
+								<label for="username">Username</label>
+								<input
+									type="text"
+									name="username"
+									id="username"
+									placeholder="Enter username..."
+									required
+								/>
+
+								<label for="password">Password</label>
+								<input
+									type="password"
+									name="password"
+									id="password"
+									placeholder="Enter password..."
+									required
+								/>
+							</div>
+							<div class="form-control">
+								<label for="room">Room</label>
+								<select name="room" id="room">
+									<option value="JavaScript">JavaScript</option>
+									<option value="Python">Python</option>
+									<option value="PHP">PHP</option>
+									<option value="C#">C#</option>
+									<option value="Ruby">Ruby</option>
+									<option value="Java">Java</option>
+								</select>
+							</div>
+							<button type="submit" class="btn">Join Chat</button>
+						</form>
 					</div>
-					<div class="form-control">
-						<label for="room">Room</label>
-						<select name="room" id="room">
-							<option value="JavaScript">JavaScript</option>
-							<option value="Python">Python</option>
-							<option value="PHP">PHP</option>
-							<option value="C#">C#</option>
-							<option value="Ruby">Ruby</option>
-							<option value="Java">Java</option>
-						</select>
+					<div class="signup-container">
+						<form action="" id="reg-form">
+							<div class="form-control">
+								<label for="username">Username</label>
+								<input
+									type="text"
+									name="username"
+									id="username-su"
+									placeholder="Enter username..."
+									required
+								/>
+
+								<label for="password">Password</label>
+								<input
+									type="password"
+									name="password"
+									id="password-su"
+									placeholder="Enter password..."
+									required
+								/>
+							</div>
+							<button type="submit" class="reg btn">Register</button>
+						</form>
 					</div>
-					<button type="submit" class="btn">Join Chat</button>
-				</form>
+				</div>		
 			</main>
 		</div>
+		<script 
+			src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js" 
+			integrity="sha512-VZ6m0F78+yo3sbu48gElK4irv2dzPoep8oo9LEjxviigcnnnNvnTOJRSrIhuFk68FMLOpiNz+T77nNY89rnWDg==" 
+			crossorigin="anonymous">
+		</script>
+		<script src="js/index.js"></script>
 	</body>
 </html>

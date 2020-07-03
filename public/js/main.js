@@ -1,3 +1,5 @@
+
+
 const socket = io(); //new connection
 
 const chatForm = document.getElementById('chat-form');
@@ -10,13 +12,28 @@ const { username, room } = Qs.parse(location.search, {
     ignoreQueryPrefix: true
 });
 
-//console.log(username, room)
+
 
 socket.emit('joinRoom', { username, room });
 
 socket.on('roomUsers', user => {
     outputRoomName(user.room);
     outputUsers(user.users);
+
+    const room = {
+        room: user.room
+    };
+    console.log(room);
+
+    axios.post('http://localhost:3000/message/fetch', room)
+        .then((res) => res.data.map(msg => {
+            const message = {
+                username: msg.from,
+                text: msg.body,
+                time: 0
+            }
+            outputMessage(message);
+        }));
 });
 
 function outputRoomName(room) {
@@ -41,9 +58,22 @@ chatForm.addEventListener('submit', (e) => {
 
     const msg = e.target.elements.msg.value;
     
-    socket.emit('chatMessage', msg); // emit a message to thee server
+    socket.emit('chatMessage', msg); // emit a message to the server
 
     e.target.elements.msg.value = '';
+})
+
+// storing message after chatMessage emit to server
+socket.on('storeMessage', msg => {
+    const message = {
+        to: msg.user.room,
+        from: msg.user.username,
+        bodyM: msg.message
+    }
+    console.log(message);
+
+    axios.post('http://localhost:3000/message/new', message)
+        .then(res => console.log(res.data));
 })
 
 const outputMessage = (message) => {

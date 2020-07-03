@@ -10,9 +10,12 @@
   "author": "Chinmay Dixit",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.2",
+    "dotenv": "^8.2.0",
     "electron": "^9.0.5",
     "express": "^4.17.1",
     "moment": "^2.27.0",
+    "mongoose": "^5.9.20",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
