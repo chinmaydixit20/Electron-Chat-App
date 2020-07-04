@@ -2,9 +2,12 @@ const users = []
 
 function userJoin(id, username, room) {
     const user = { id, username, room };
-
-    users.push(user);
-
+    const us = users.filter(u => {
+        return u.username === user.username;
+    })
+    if(us.length === 0) {
+        users.push(user);
+    }
     return user;    
 }
 

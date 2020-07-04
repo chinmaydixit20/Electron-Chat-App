@@ -1,44 +1,68 @@
-
-
 const socket = io(); //new connection
+const electron = require('electron');
+const { ipcRenderer } = electron;
 
 const chatForm = document.getElementById('chat-form');
 const chatMessages = document.querySelector('.chat-messages');
 const roomName = document.getElementById('room-name');
 const userList = document.getElementById('users');
+const roomList = document.querySelector('.room-list');
 
+// const { username } = Qs.parse(location.search, {
+//     ignoreQueryPrefix: true
+// });
 
-const { username, room } = Qs.parse(location.search, {
-    ignoreQueryPrefix: true
-});
+var username;
 
+ipcRenderer.on('userLoginSuccess', (e, user) => {
+    console.log(user);
+    username = user.username;
+    socket.emit('joinRoom', { username: user.username, room: 'JavaScript'}); //c
+})
 
+var currentRoom = 'JavaScript';
 
-socket.emit('joinRoom', { username, room });
 
 socket.on('roomUsers', user => {
-    outputRoomName(user.room);
     outputUsers(user.users);
+});    
 
+socket.on('loadMsgs', user => {
     const room = {
         room: user.room
     };
-    console.log(room);
 
     axios.post('http://localhost:3000/message/fetch', room)
-        .then((res) => res.data.map(msg => {
-            const message = {
-                username: msg.from,
-                text: msg.body,
-                time: 0
-            }
-            outputMessage(message);
-        }));
+        .then((res) => {
+            
+            chatMessages.innerHTML = '';
+            res.data.map(msg => {
+                
+                const message = {
+                    username: msg.from,
+                    text: msg.body,
+                    time: 0
+                }
+                outputMessage(message);
+                })
+            
+            });
+            //outputUsers(user.users);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
 });
 
-function outputRoomName(room) {
-    roomName.innerText = room;
-}
+
+roomList.addEventListener('click', (e) => {
+    console.log(e.target.innerHTML);
+    const room = e.target.innerHTML;
+    if(room !== currentRoom) {
+        currentRoom = room;
+        
+        socket.emit('switch_room');
+        //chatMessages.innerHTML = '';
+        socket.emit('joinRoom', {username, room});
+    }
+})
 
 function outputUsers(users) {
     userList.innerHTML = `

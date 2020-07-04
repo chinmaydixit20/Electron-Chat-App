@@ -1,16 +1,28 @@
 const electron = require('electron');
 const path = require('path');
 const url = require('url');
-const { app, BrowserWindow } = electron;
+const { app, BrowserWindow, ipcMain } = electron;
 const isDev = require('electron-is-dev');
 
 let mainWindow;
 
 function createWindow() {
-  mainWindow = new BrowserWindow({width: 900, height: 680});
+  mainWindow = new BrowserWindow({
+    width: 900, 
+    height: 680,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  });
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, 'index.html')}`);
   mainWindow.on('closed', () => mainWindow = null);
 }
+
+ipcMain.on('userLogin', (e, user) => {
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.send('userLoginSuccess', user);
+  })  
+})
 
 app.on('ready', createWindow);
 

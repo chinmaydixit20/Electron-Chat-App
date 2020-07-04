@@ -22,18 +22,16 @@ connection.once('open', () => console.log('MongoDB connection established succes
 
 
 app.use(express.static(path.join(__dirname, '../public')));
+
 io.on('connection', socket => { //console.log here logs the data on the server console which is the terminal
-    //console.log('new websocket connection');
     socket.on('joinRoom', ({username, room}) => {
 
         const user = userJoin(socket.id, username, room);
 
         socket.join(user.room);
 
-        socket.emit('message', formatMessages('Chat', 'Welcome!'));
+        socket.emit('loadMsgs', user);
 
-        socket.broadcast.to(user.room).emit('message', formatMessages('Chat', `${user.username} joined!`));
-    
         io.to(user.room).emit('roomUsers', {
             room: user.room,
             users: getRoomUsers(user.room)
@@ -47,18 +45,24 @@ io.on('connection', socket => { //console.log here logs the data on the server c
         io.to(user.room).emit('message', formatMessages(user.username, message));
     })
 
-    socket.on('disconnect', () => {
-        const user = userLeaves(socket.id);
-        if(user) {
-            io.to(user.room).emit('message', formatMessages('Chat', `${user.username} has left the chat`));
-            
+    socket.on('switch_room', () => {
+        const user = currentUser(socket.id);
+        if(user) {            
             io.to(user.room).emit('roomUsers', {
                 room: user.room,
                 users: getRoomUsers(user.room)
             })
-            
         }
+    })
 
+    socket.on('disconnect', () => {
+        const user = userLeaves(socket.id);
+        if(user) {
+            io.to(user.room).emit('roomUsers', {
+                room: user.room,
+                users: getRoomUsers(user.room)
+            })
+        }
     })
 
 });
@@ -66,12 +70,9 @@ io.on('connection', socket => { //console.log here logs the data on the server c
 const userRouter = require('./routes/user');
 const messageRouter = require('./routes/message') 
 
-//app.use('/message', loginRoute);
 app.use('/user', userRouter);
 app.use('/message', messageRouter);
 
 const PORT = 3000 || process.env.PORT;
-
-
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
