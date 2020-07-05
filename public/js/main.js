@@ -1,26 +1,20 @@
 const socket = io(); //new connection
 const electron = require('electron');
 const { ipcRenderer } = electron;
-
 const chatForm = document.getElementById('chat-form');
 const chatMessages = document.querySelector('.chat-messages');
 const roomName = document.getElementById('room-name');
 const userList = document.getElementById('users');
 const roomList = document.querySelector('.room-list');
 
-// const { username } = Qs.parse(location.search, {
-//     ignoreQueryPrefix: true
-// });
-
 var username;
+var currentRoom = 'JavaScript';
 
 ipcRenderer.on('userLoginSuccess', (e, user) => {
     console.log(user);
     username = user.username;
     socket.emit('joinRoom', { username: user.username, room: 'JavaScript'}); //c
 })
-
-var currentRoom = 'JavaScript';
 
 
 socket.on('roomUsers', user => {
@@ -47,7 +41,6 @@ socket.on('loadMsgs', user => {
                 })
             
             });
-            //outputUsers(user.users);
             chatMessages.scrollTop = chatMessages.scrollHeight;
 });
 
@@ -58,9 +51,7 @@ roomList.addEventListener('click', (e) => {
     if(room !== currentRoom) {
         currentRoom = room;
         
-        socket.emit('switch_room');
-        //chatMessages.innerHTML = '';
-        socket.emit('joinRoom', {username, room});
+        socket.emit('switch_room', room);
     }
 })
 
@@ -72,7 +63,6 @@ function outputUsers(users) {
 
 
 socket.on('message', message => {
-    //console.log(message);
     outputMessage(message);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 })

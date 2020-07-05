@@ -25,7 +25,7 @@ router.route('/login').post((req, res) => {
                 return res.json(u);
             }
             else {
-                return res.status(401).json('Invalid Username/ Password');
+                return res.json(null);
             }
         })
 })

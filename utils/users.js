@@ -23,6 +23,15 @@ function userLeaves(id) {
     }
 }
 
+function userSwitch(id, room) {
+    const index = users.findIndex(user => user.id === id);
+
+    if(index !== -1) {
+        users[index].room = room;
+        return users[index];
+    }
+}
+
 function getRoomUsers(room) {
     return users.filter(user => user.room === room);
 }
@@ -31,5 +40,6 @@ module.exports = {
     userJoin,
     currentUser,
     userLeaves,
+    userSwitch,
     getRoomUsers
 }

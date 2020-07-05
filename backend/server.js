@@ -4,9 +4,9 @@ const app = express();
 const http = require('http');
 const socketio = require('socket.io');
 const mongoose = require('mongoose');
-const { userJoin, currentUser, userLeaves, getRoomUsers } = require('../utils/users');
+const { userJoin, currentUser, userLeaves, getRoomUsers, userSwitch } = require('../utils/users');
 const server = http.createServer(app);
-const formatMessages = require('../utils/messages'); //instead of sending a simple string we format the message in the form of an object
+const formatMessages = require('../utils/messages'); 
 
 const io = socketio(server);
 
@@ -23,7 +23,7 @@ connection.once('open', () => console.log('MongoDB connection established succes
 
 app.use(express.static(path.join(__dirname, '../public')));
 
-io.on('connection', socket => { //console.log here logs the data on the server console which is the terminal
+io.on('connection', socket => { 
     socket.on('joinRoom', ({username, room}) => {
 
         const user = userJoin(socket.id, username, room);
@@ -38,20 +38,27 @@ io.on('connection', socket => { //console.log here logs the data on the server c
         })
     })
     
-
     socket.on('chatMessage', message => {
         const user = currentUser(socket.id);
         socket.emit('storeMessage', {user, message});
         io.to(user.room).emit('message', formatMessages(user.username, message));
     })
 
-    socket.on('switch_room', () => {
-        const user = currentUser(socket.id);
-        if(user) {            
-            io.to(user.room).emit('roomUsers', {
-                room: user.room,
-                users: getRoomUsers(user.room)
+    socket.on('switch_room', (room) => {
+        const oldRoom = currentUser(socket.id).room;
+        const u = userSwitch(socket.id, room);
+        socket.leaveAll();
+        socket.join(u.room);
+        if(u) {          
+            io.to(oldRoom).emit('roomUsers', {
+                room: oldRoom,
+                users: getRoomUsers(oldRoom)
+            })  
+            io.to(u.room).emit('roomUsers', {
+                room: u.room,
+                users: getRoomUsers(u.room)
             })
+            socket.emit('loadMsgs', u);
         }
     })
 
