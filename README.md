@@ -20,6 +20,6 @@ Run `npm run dev` to launch an Electron window.
 3. Adding/ removing users on groups
 
 ## References
-[Realtime Chat application using socket.io: Brad Traversy](https://youtu.be/kN1Czs0m1SU)
-Electron Documentation
-Socket.io Documentation
+- [Realtime Chat application using socket.io: Brad Traversy](https://youtu.be/kN1Czs0m1SU)
+- Electron Documentation
+- Socket.io Documentation
