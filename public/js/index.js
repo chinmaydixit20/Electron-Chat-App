@@ -11,7 +11,7 @@ register.addEventListener('submit', (e) => {
     }
     console.log(regUser);
     axios.post('http://localhost:3000/user/register', regUser)
-        .then(res => alert(res.data));
+        .then(res => console.log(res.data));
 
     e.target.elements.username.value = '';
     e.target.elements.password.value = '';    

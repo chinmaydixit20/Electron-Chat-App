@@ -46,6 +46,7 @@ io.on('connection', socket => {
 
     socket.on('switch_room', (room) => {
         const oldRoom = currentUser(socket.id).room;
+        console.log(oldRoom);
         const u = userSwitch(socket.id, room);
         socket.leaveAll();
         socket.join(u.room);

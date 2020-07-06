@@ -3,6 +3,7 @@ const path = require('path');
 const url = require('url');
 const { app, BrowserWindow, ipcMain } = electron;
 const isDev = require('electron-is-dev');
+const { Menu, globalShortcut } = require('electron');
 
 let mainWindow;
 
@@ -16,6 +17,10 @@ function createWindow() {
   });
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, 'index.html')}`);
   mainWindow.on('closed', () => mainWindow = null);
+  globalShortcut.register('CmdOrCtrl+Q', () => app.quit());
+
+  const menu = Menu.buildFromTemplate(menuTemplate);
+  Menu.setApplicationMenu(menu);
 }
 
 ipcMain.on('userLogin', (e, user) => {
@@ -37,3 +42,41 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+const menuTemplate = [
+  {
+    label: 'Chat',
+    submenu: [
+      {
+        label: 'Quit', 
+        click() {
+          app.quit();
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        role: 'reload'
+      }
+    ]
+  }
+]
+
+if(isDev) {
+  menuTemplate.push({
+    label: 'DevTools',
+    submenu: [
+      {
+        label: 'DevTools',
+        click(item, focusedWindow) {
+          focusedWindow.toggleDevTools();
+        }
+      }
+    ]
+  })
+}
+
+if(process.platform == 'darwin') {
+  menuTemplate.unshift();
+}

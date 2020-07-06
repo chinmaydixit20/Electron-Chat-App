@@ -1,5 +1,6 @@
 const socket = io(); //new connection
 const electron = require('electron');
+const moment = require('moment');
 const { ipcRenderer } = electron;
 const chatForm = document.getElementById('chat-form');
 const chatMessages = document.querySelector('.chat-messages');
@@ -35,7 +36,7 @@ socket.on('loadMsgs', user => {
                 const message = {
                     username: msg.from,
                     text: msg.body,
-                    time: 0
+                    time: moment(msg.updatedAt).format('DD-MM h:mm a')
                 }
                 outputMessage(message);
                 })
@@ -49,6 +50,7 @@ roomList.addEventListener('click', (e) => {
     console.log(e.target.innerHTML);
     const room = e.target.innerHTML;
     if(room !== currentRoom) {
+        
         currentRoom = room;
         
         socket.emit('switch_room', room);
