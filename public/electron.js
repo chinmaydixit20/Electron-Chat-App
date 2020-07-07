@@ -15,7 +15,11 @@ function createWindow() {
       nodeIntegration: true
     }
   });
-  mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, 'index.html')}`);
+  mainWindow.loadURL('http://localhost:3000' || url.format({
+    pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  }));
   mainWindow.on('closed', () => mainWindow = null);
   globalShortcut.register('CmdOrCtrl+Q', () => app.quit());
 

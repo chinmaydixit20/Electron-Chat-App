@@ -5,21 +5,44 @@
   "main": "./public/electron.js",
   "scripts": {
     "start": "node server",
-    "dev": "electron ."
+    "dev": "electron .",
+    "pack": "electron-builder --dir",
+    "build": "electron-builder --win --linux"
   },
-  "author": "Chinmay Dixit",
+  "author": "Chinmay Dixit <chinmayvd20@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
     "dotenv": "^8.2.0",
-    "electron": "^9.0.5",
+    "electron-is-dev": "^1.2.0",
     "express": "^4.17.1",
     "moment": "^2.27.0",
     "mongoose": "^5.9.20",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
-    "electron-is-dev": "^1.2.0",
+    "electron": "^9.0.5",
+    "electron-builder": "^22.7.0",
     "nodemon": "^2.0.4"
+  },
+  "build": {
+    "appId": "com.electron.chatApp",
+    "productName": "Electron Chat App",
+    "files": [
+      "./public/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "./public"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": [
+        "deb"
+      ]
+    }
   }
 }
